@@ -1,4 +1,4 @@
-import fileinput as fin
+import sys
 
 
 def _get_description(infile):
@@ -10,13 +10,9 @@ def _get_description(infile):
     return description
 
 
-test_var = [2, -3]
-test_var[:0] = [1]
-res = 0
-
-
-def _determine_val(description):
-    global res
+def _determine_val(description, test_var):
+    test_var[:0] = [1]
+    res = 0
     for stat in description[1:]:
         comp = 1
         for coeff in stat[:(len(stat)-1)]:
@@ -25,7 +21,24 @@ def _determine_val(description):
             comp = comp*test_var[int(coeff)]
         comp = comp*stat[-1]
         res = res + comp
+    return res
 
 
-_determine_val(_get_description(fin.input(files='./description.txt')))
-print(res)
+def calculate_res():
+    description = _get_description(open('description.txt', 'r'))
+    params_str = []
+    for in_col in sys.stdin:
+        params_str.append(in_col.replace('\n', '').split(' '))
+
+    params = []
+    for par_col in params_str:
+        new_col = []
+        for par in par_col:
+            new_col.append(float(par))
+        params.append(new_col)
+
+    for param in params:
+        print(_determine_val(description, param))
+
+
+calculate_res()
