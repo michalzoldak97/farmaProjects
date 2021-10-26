@@ -2,11 +2,15 @@ import sys
 
 
 def _get_description(infile):
+    description_str = []
+    for char in infile:
+        description_str.append(char.replace('\n', '').split(' '))
     description = []
-    for i, char in enumerate(infile):
-        description.append(char.replace('\n', '').split(' '))
-        for j, num in enumerate(description[i]):
-            description[i][j] = float(num)
+    for num in description_str:
+        new_col = []
+        for par in num:
+            new_col.append(float(par))
+        description.append(new_col)
     return description
 
 
