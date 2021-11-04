@@ -20,10 +20,10 @@ def _get_file(filepath):
 
 
 def _get_description():
-    description = []
+    descr = []
     for in_col in sys.stdin:
-        description.append([float(i) for i in in_col.split()])
-    return description
+        descr.append([float(i) for i in in_col.split()])
+    return descr
 
 
 def _get_iter(filepath):
@@ -45,9 +45,18 @@ def _get_function(description):
     return a[1:], c
 
 
+def _write_data_out(filepath, iter_num):
+    f = open(filepath, "w")
+    str_to_write = "iterations=" + str(iter_num) + "\n"
+    f.write(str_to_write)
+    f.close()
+
+
 tr_set_path, dt_in_path, dt_out_path = _get_filepaths()
 
-a, c = _get_function(_get_description())
+description = _get_description()
+
+a, c = _get_function(description)
 
 epochs = _get_iter(dt_in_path)
 
@@ -73,14 +82,32 @@ for i in range(epochs):
         Y_pred = [m*x + c for x in X[j]]
         D_m = (-2/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
         a[j] = m - lr * D_m
-        loss.append(D_m)
+        loss[j].append(D_m)
     D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
     c = c - lr * D_c
     iter_count += 1
+    if all(0.1 > l[-1] > -0.1 for l in loss):
+        break
 
+_write_data_out(dt_out_path, iter_count)
 
-print(a, c, iter_count)
-print(loss)
+for i, el in enumerate(description[0]):
+    sys.stdout.write(str(int(el)))
+    if i < len(description[0]) - 1:
+        sys.stdout.write(" ")
+    else:
+        sys.stdout.write("\n")
+
+for i, m in enumerate(a):
+    for n in range(len(a)-1):
+        sys.stdout.write("0 ")
+    sys.stdout.write(str(i + 1) + " ")
+    sys.stdout.write(str(m) + "\n")
+
+for n in range(len(a)):
+    sys.stdout.write("0 ")
+sys.stdout.write(str(c) + "\n")
+
 # print("x")
 # for i in X[0]:
 #     print(i)
