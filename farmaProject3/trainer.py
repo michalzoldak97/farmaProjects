@@ -1,7 +1,6 @@
 import fileinput
 import sys
 import argparse
-import matplotlib.pyplot as plt
 
 
 def _get_filepaths():
@@ -33,10 +32,10 @@ def _get_iter(filepath):
     return itr
 
 
-def _get_function(description):
-    a = [0 for x in range(int(description[0][0])+1)]
+def _get_function(descr):
+    a = [0 for x in range(int(descr[0][0])+1)]
     c = 0
-    for col in description[1:]:
+    for col in descr[1:]:
         for i, num in enumerate(col):
             if num != 0 and i != len(col) - 1:
                 a[int(num)] = col[-1]
@@ -62,7 +61,7 @@ epochs = _get_iter(dt_in_path)
 
 tr_set = _get_file(tr_set_path)
 
-lr = 0.0001
+lr = 0.01
 
 iter_count = 0
 loss = [[] for x in a]
@@ -86,7 +85,9 @@ for i in range(epochs):
     D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
     c = c - lr * D_c
     iter_count += 1
-    if all(0.1 > l[-1] > -0.1 for l in loss):
+    if lr > 0.0001:
+        lr = lr - (1 / iter_count) * 0.001
+    if iter_count > 100000000 or all(0.0000001 > l[-1] > -0.0000001 for l in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
@@ -107,19 +108,3 @@ for i, m in enumerate(a):
 for n in range(len(a)):
     sys.stdout.write("0 ")
 sys.stdout.write(str(c) + "\n")
-
-# print("x")
-# for i in X[0]:
-#     print(i)
-# print("x2")
-# for i in X[1]:
-#     print(i)
-# print("y")
-# for i in Y:
-#     print(i)
-#
-# Y_pred = [a[0]*x + c for x in X[0]]
-#
-# plt.scatter(X[0], Y)
-# plt.plot([min(X[0]), max(X[0])], [min(Y_pred), max(Y_pred)], color='red')
-# plt.show()
