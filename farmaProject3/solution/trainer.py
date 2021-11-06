@@ -33,18 +33,22 @@ def _get_iter(filepath):
 
 
 def _get_function(descr):
-    a = [0 for x in range(int(descr[0][1])+1)]
-    c = 0
-    for col in descr[1:]:
-        for i, num in enumerate(col):
-            if num != 0 and i != len(col) - 1:
-                a[int(num)] = col[-1]
-        if all(int(x) == 0 for x in col[:-1]):
-            c = col[-1]
-    if len(a) > 1:
+    try:
+        a = [0.0 for x in range(int(descr[0][0])+1)]
+        c = 0.0
+        for col in descr[1:]:
+            for i, num in enumerate(col):
+                if num != 0 and i != len(col) - 1:
+                    a[int(num)] = col[-1]
+            if all(int(x) == 0 for x in col[:-1]):
+                c = col[-1]
         return a[1:], c
-    else:
-        return a, c
+    except:
+        if len(descr) - 2 > 0:
+            a = [1.0 for x in range(len(descr) - 2)]
+        else:
+            a = [1.0]
+        return a, 1.0
 
 
 def _write_data_out(filepath, iter_num):
