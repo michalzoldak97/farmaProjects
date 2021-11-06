@@ -1,6 +1,8 @@
 import fileinput
 import sys
 import argparse
+import matplotlib.pyplot as plt
+import random
 
 
 def _get_filepaths():
@@ -74,7 +76,13 @@ for col in tr_set:
     Y.append(col[-1])
 
 X = list(zip(*X))
-n = float(len(X[0]))
+n = float(len(a))
+
+Y_pred = [a[0]*x + c for x in X[0]]
+
+plt.scatter(X[0], Y)
+plt.plot([min(X[0]), max(X[0])], [min(Y_pred), max(Y_pred)], color='green')
+plt.show()
 
 for i in range(epochs):
     for j, m in enumerate(a):
@@ -82,12 +90,12 @@ for i in range(epochs):
         D_m = (-2/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
         a[j] = m - lr * D_m
         loss[j].append(D_m)
-    D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
-    c = c - lr * D_c
+        D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
+        c = c - lr * D_c
     iter_count += 1
     if lr > 0.0001:
         lr = lr - (1 / iter_count) * 0.001
-    if iter_count > 100000000 or all(0.0000001 > l[-1] > -0.0000001 for l in loss):
+    if iter_count > 100000 or all(0.0000000001 > l[-1] > -0.0000000001 for l in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
@@ -108,3 +116,9 @@ for i, m in enumerate(a):
 for n in range(len(a)):
     sys.stdout.write("0 ")
 sys.stdout.write(str(c) + "\n")
+
+Y_pred = [a[0]*x + c for x in X[0]]
+
+plt.scatter(X[0], Y)
+plt.plot([min(X[0]), max(X[0])], [min(Y_pred), max(Y_pred)], color='red')
+plt.show()
