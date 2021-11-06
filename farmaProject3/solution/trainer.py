@@ -68,7 +68,7 @@ epochs = _get_iter(dt_in_path)
 
 tr_set = _get_file(tr_set_path)
 
-lr = 0.001
+lr = 0.01
 
 iter_count = 0
 loss = [[] for x in a]
@@ -87,13 +87,15 @@ n = float(len(a))
 for i in range(epochs):
     for j, m in enumerate(a):
         Y_pred = [m*x + c for x in X[j]]
-        D_m = (-2/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
+        D_m = (-1/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
         a[j] = m - lr * D_m
         loss[j].append(D_m)
-        D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
+        D_c = (-1/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
         c = c - lr * D_c
     iter_count += 1
-    if iter_count > 1000000 or all(0.000000000001 > l[-1] > -0.000000000001 for l in loss):
+    if lr > 0.0001:
+        lr = lr - (1 / iter_count) * 0.001
+    if iter_count > 1000000 or all(0.00000000000001 > l[-1] > -0.00000000000001 for l in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
