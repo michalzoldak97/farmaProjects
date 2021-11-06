@@ -41,7 +41,10 @@ def _get_function(descr):
                 a[int(num)] = col[-1]
         if all(int(x) == 0 for x in col[:-1]):
             c = col[-1]
-    return a[1:], c
+    if len(a) > 1:
+        return a[1:], c
+    else:
+        return a, c
 
 
 def _write_data_out(filepath, iter_num):
@@ -86,7 +89,7 @@ for i in range(epochs):
         D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
         c = c - lr * D_c
     iter_count += 1
-    if iter_count > 100000 or all(0.0000000001 > l[-1] > -0.0000000001 for l in loss):
+    if iter_count > 1000000 or all(0.000000000001 > l[-1] > -0.000000000001 for l in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
