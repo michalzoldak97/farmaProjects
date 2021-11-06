@@ -33,7 +33,7 @@ def _get_iter(filepath):
 
 
 def _get_function(descr):
-    a = [0 for x in range(int(descr[0][0])+1)]
+    a = [0 for x in range(int(descr[0][1])+1)]
     c = 0
     for col in descr[1:]:
         for i, num in enumerate(col):
@@ -61,7 +61,7 @@ epochs = _get_iter(dt_in_path)
 
 tr_set = _get_file(tr_set_path)
 
-lr = 0.01
+lr = 0.001
 
 iter_count = 0
 loss = [[] for x in a]
@@ -83,12 +83,10 @@ for i in range(epochs):
         D_m = (-2/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
         a[j] = m - lr * D_m
         loss[j].append(D_m)
-    D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
-    c = c - lr * D_c
+        D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
+        c = c - lr * D_c
     iter_count += 1
-    if lr > 0.0001:
-        lr = lr - (1 / iter_count) * 0.001
-    if iter_count > 100000 or all(0.000000001 > l[-1] > -0.000000001 for l in loss):
+    if iter_count > 100000 or all(0.0000000001 > l[-1] > -0.0000000001 for l in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
