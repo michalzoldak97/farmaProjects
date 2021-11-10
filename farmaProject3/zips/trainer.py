@@ -67,7 +67,7 @@ epochs = _get_iter(dt_in_path)
 
 tr_set = _get_file(tr_set_path)
 
-lr = 0.1
+lr = 0.01
 
 iter_count = 0
 loss = [1.0 for x in a]
@@ -84,9 +84,6 @@ n = float(len(Y))
 
 pre_d = 1.0/n
 
-if len(a) > 9:
-    lr = 0.01
-
 for itr in range(epochs):
     for j, m in enumerate(a):
         Y_pred = [m*x + c for x in X[j]]
@@ -94,6 +91,8 @@ for itr in range(epochs):
         a[j] =  m - lr * D_m
         loss[j] = D_m
         D_c = pre_d * sum([(Y_pred[i] - Y[i]) for i, x in enumerate(X[j])])
+        if len(a) > 9:
+            lr = lr / ((iter_count + 1)*0.5)
         c = c - lr * D_c
     
     iter_count += 1
