@@ -30,8 +30,13 @@ def _get_iter(filepath):
         itr = int(line.split("=")[1])
     return itr
 
-def is_nan(num):
-    return num!=num
+
+def _calc_funct_val(args, c, x_all):
+    res = 0.0
+    for i, x in enumerate(x_all):
+        res += x*args[i]
+    return res + c
+
 
 def _get_function(descr):
     elements = []
@@ -67,11 +72,11 @@ epochs = _get_iter(dt_in_path)
 
 tr_set = _get_file(tr_set_path)
 
-lr = 0.01
-
+lr = 0.1
 iter_count = 0
-loss = [1.0 for x in a]
 
+loss = [1.0 for x in a]
+loss.append(1.0)
 X = []
 Y = []
 
@@ -79,22 +84,32 @@ for col in tr_set:
     X.append(col[:-1])
     Y.append(col[-1])
 
-X = list(zip(*X))
+y_pred = [0.0 for x in Y]
+
 n = float(len(Y))
 
-pre_d = 1.0/n
+pre_d = -2.0/n
 
-for itr in range(epochs):
-    for j, m in enumerate(a):
-        Y_pred = [m*x + c for x in X[j]]
-        D_m = pre_d * sum([x * (Y_pred[i] - Y[i]) for i, x in enumerate(X[j])])
-        a[j] =  m - lr * D_m
-        loss[j] = D_m
-        D_c = pre_d * sum([(Y_pred[i] - Y[i]) for i, x in enumerate(X[j])])
-        if len(a) > 9:
-            lr = lr / ((iter_count + 1)*0.5)
-        c = c - lr * D_c
+for epoch in range(epochs):
+# 1.
+# create list of actual function values
+    for i, col in enumerate(X):
+        y_pred[i] = _calc_funct_val(a, c, col)
+# 2.
+# calculate partial derivative foreach arg
+    y_diff = [Y[i] - pred for i, pred in enumerate(y_pred)]
     
+    for i, arg in enumerate(a):
+        d_m  = pre_d * sum( [X[j][i] * df for j, df in enumerate(y_diff)])
+        loss[i] = d_m
+        a[i] = arg - lr * d_m
+# 3
+# calculate partial derivateve for c
+    d_c = pre_d * sum([df for df in y_diff])
+    loss[-1] = d_c
+# 4
+# change c 
+    c = c - lr * d_c
     iter_count += 1
     if all(0.00001 > l_val > -0.00001 for l_val in loss):
         break
