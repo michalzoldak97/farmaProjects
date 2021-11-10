@@ -84,31 +84,24 @@ for col in tr_set:
     X.append(col[:-1])
     Y.append(col[-1])
 
-y_pred = [0.0 for x in Y]
-
 n = float(len(Y))
 
 pre_d = -2.0/n
 
 for epoch in range(epochs):
-# 1.
-# create list of actual function values
-    for i, col in enumerate(X):
-        y_pred[i] = _calc_funct_val(a, c, col)
-# 2.
-# calculate partial derivative foreach arg
+# 1. create list of function values
+    y_pred = [_calc_funct_val(a, c, col) for col in X]
+# 2. calculate partial derivative foreach arg
     y_diff = [Y[i] - pred for i, pred in enumerate(y_pred)]
     
     for i, arg in enumerate(a):
         d_m  = pre_d * sum( [X[j][i] * df for j, df in enumerate(y_diff)])
         loss[i] = d_m
         a[i] = arg - lr * d_m
-# 3
-# calculate partial derivateve for c
+# 3 calculate partial derivateve for c
     d_c = pre_d * sum([df for df in y_diff])
     loss[-1] = d_c
-# 4
-# change c 
+# 4 change c 
     c = c - lr * d_c
     iter_count += 1
     if all(0.00001 > l_val > -0.00001 for l_val in loss):
