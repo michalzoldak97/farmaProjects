@@ -1,3 +1,5 @@
+import math
+
 
 def _get_matrix_cell(m, col):
     return [m[i][col]for i, _ in enumerate(m)]
@@ -58,10 +60,25 @@ def normalize_universal(x, ab):
     return inverse(x_rev)
 
 
+def _mean(x):
+    return sum(x) / len(x)
+
+
+def _std(x):
+    mean = _mean(x)
+    return mean, math.sqrt(sum([(a - mean) ** 2 for a in x]) / len(x))
+
+
+def normalize_features(x):
+    x_rev = inverse(x)
+    for col in x_rev:
+        x_mean, x_std = _std(col)
+        if x_std != 0.0:
+            for i, x_pr in enumerate(col):
+                col[i] = (x_pr - x_mean) / x_std
+
+    return inverse(x_rev)
+
+
 def ones(l):
     return [1.0 for _ in range(l)]
-
-
-mxa = [[1, 2, 3], [4, 5, 6]]
-mxb = [[7, 8, 9, 10], [11, 12, 13, 14], [15, 16, 17, 18]]
-print(matrix_multiply(mxa, mxb))

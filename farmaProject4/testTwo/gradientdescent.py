@@ -1,4 +1,4 @@
-from utils import ones
+from matchoperations import ones
 
 
 def _calc_funct_val(args, x_all):
@@ -6,10 +6,6 @@ def _calc_funct_val(args, x_all):
     for i, x in enumerate(x_all):
         res += x*args[i]
     return res
-
-
-def _test_funct(x):
-    return x * 2 + 3
 
 
 def _gradient_descent(lr, epochs, start, x, y):
@@ -25,11 +21,11 @@ def _gradient_descent(lr, epochs, start, x, y):
             loss[i] = d_m
             vec[i] = arg - lr * d_m
 
-        if all(0.00001 > l_val > -0.00001 for l_val in loss):
+        if all(0.001 > l_val > -0.001 for l_val in loss):
             break
 
     return vec
 
 
-def minimize(start, x, y, lr=.1, epochs=10000):
+def minimize(start, x, y, reg, lr=.1, epochs=10000):
     return _gradient_descent(lr, epochs, start, x, y)

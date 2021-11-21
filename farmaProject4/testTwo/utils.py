@@ -1,6 +1,6 @@
-import matchoperations as mat
 import fileinput
 import argparse
+import sys
 
 
 def get_filepath():
@@ -19,3 +19,7 @@ def get_data(filepath):
         x.append(col[:-1])
         y.append(col[-1])
     return x, y
+
+
+def read_sys_file():
+    return [[float(i) for i in in_col.split()] for in_col in sys.stdin]
