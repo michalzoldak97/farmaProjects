@@ -69,6 +69,10 @@ def _std(x):
     return mean, math.sqrt(sum([(a - mean) ** 2 for a in x]) / len(x))
 
 
+def calc_mean_error(y, y_pred):
+    return (1 / len(y)) * sum([(a - y_pred[i]) ** 2 for i, a in enumerate(y)])
+
+
 def normalize_features(x):
     x_rev = inverse(x)
     for col in x_rev:
