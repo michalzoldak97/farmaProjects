@@ -1,0 +1,2 @@
+type=python3_raw
+regressor="regressor.py"
