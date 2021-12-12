@@ -1,4 +1,4 @@
-from distances import euc_dist, cos_dist, acc_measure
+from distances import euc_dist, cos_dist, acc_measure, coverage_measure
 import pandas as pd
 from sklearn.metrics import accuracy_score
 import multiprocessing as mlpt
@@ -8,16 +8,16 @@ import sys
 
 def split_dataset(dataset):
     tr_df = pd.read_csv(dataset)
+    # tr_df.drop(columns=['has_collection', 'popularity', 'budget', 'language', 'runtime', 'revenue', 'vote_avg',
+    #                     'vote_count', 'gen_one', 'gen_two', 'gen_three', 'gen_four'], inplace=True)
     tr_df.drop(columns=['has_collection', 'popularity', 'budget', 'language', 'runtime', 'revenue', 'vote_avg',
-                        'vote_count', 'gen_one', 'gen_two', 'gen_three', 'gen_four'], inplace=True)
+                            'vote_count'], inplace=True)
     for col in tr_df:
         if col != 'rate':
             tr_df[col] = ((tr_df[col] - tr_df[col].min()) / (tr_df[col].max() - tr_df[col].min()))
 
-    # tr_df = (tr_df - tr_df.mean()) / tr_df.std()
-    # print(tr_df.head(20))
-    # sys.exit()
-    tr_df.user = tr_df.user * 10
+    tr_df.user = tr_df.user * 10000
+    tr_df.movie = tr_df.movie * 2
     test_set = tr_df.sample(n=7800)
     tr_df.drop(index=test_set.index, inplace=True)
     tr_set = tr_df.values.tolist()
@@ -27,9 +27,6 @@ def split_dataset(dataset):
     test_set.drop(columns=['rate'], inplace=True)
     x_tst = test_set.values.tolist()
     return tr_set, tr_x, tr_y, x_tst, y_test
-
-
-def predict_dataset(datase)
 
 
 def get_neigb(tr_set, test_row, num):
@@ -55,6 +52,11 @@ def multi_task(x_vec, lst):
     lst.append(classify(train_set, x_vec, 10))
 
 
+def multi_task_loop(lst, idx_range):
+    for idx in range(idx_range[0], idx_range[1]):
+        lst.append(classify(train_set, x_test[idx], 20))
+
+
 def main_task():
     global y_pred
     train_data_parts = []
@@ -63,14 +65,13 @@ def main_task():
     for _ in range(threads):
         train_data_parts.append(manager.list())
 
-    for idx in range(part):
-        processes = []
-        for i in range(threads):
-            processes.append(mlpt.Process(target=multi_task, args=(x_test[idx + (i * part)], train_data_parts[i])))
-        for i in range(threads):
-            processes[i].start()
-        for i in range(threads):
-            processes[i].join()
+    processes = []
+    for i in range(threads):
+        processes.append(mlpt.Process(target=multi_task_loop, args=(train_data_parts[i], (i * part, (i + 1) * part))))
+    for i in range(threads):
+        processes[i].start()
+    for i in range(threads):
+        processes[i].join()
 
     for i in range(threads):
         y_pred = y_pred + list(train_data_parts[i])
@@ -82,3 +83,4 @@ if __name__ == "__main__":
 print("Execution time: {}".format(datetime.datetime.now() - star_time))
 print(accuracy_score(y_target, y_pred))
 print(acc_measure(y_pred, y_target)) # 0.529
+print(coverage_measure(y_pred, y_target))

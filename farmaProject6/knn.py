@@ -10,7 +10,6 @@ def split_dataset(dataset):
 	for col in tr_df:
 		if col != 'rate':
 			tr_df[col] = ((tr_df[col] - tr_df[col].min()) / (tr_df[col].max() - tr_df[col].min()))
-	# print(tr_df.head(20))
 	test_set = tr_df.sample(n=7800)
 	tr_df.drop(index=test_set.index, inplace=True)
 	tr_set = tr_df.values.tolist()

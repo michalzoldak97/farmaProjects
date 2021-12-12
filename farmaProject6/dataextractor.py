@@ -11,6 +11,7 @@ movie_ids = pd.read_csv('movie.csv', sep=';')['m_idx']
 
 movie_ids = [idx for idx in movie_ids]
 
+
 def get_data(a_key, mv_id):
     query = 'https://api.themoviedb.org/3/movie/'+mv_id+'?api_key='+a_key
     res =  requests.get(query)
@@ -47,12 +48,12 @@ def write_file(filename, text):
     except:
         print("Error gen")
 
-    # sys.exit()
 
-    result = [dataset['original_title'],adult, collection_name, budget, genres, original_language, popularity, revenue, runtime, vote_average, vote_count]
+    result = [dataset['original_title'], adult, collection_name, budget, genres, original_language, popularity, revenue, runtime, vote_average, vote_count]
     csvwriter.writerow(result)
     print (result)
     csvFile.close()
+
 
 csvFile = open('movie_collection_data.csv','w')
 csvwriter = csv.writer(csvFile)

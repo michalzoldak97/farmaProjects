@@ -1,14 +1,14 @@
-from numpy import NaN
 import pandas as pd
-import sys
 
 mov_data = pd.read_csv('movie_collection_data_3.csv')
+
 
 def index_names():
     for i, _ in enumerate(mov_data['Movie_name']):
         mov_data.at[i, 'Movie_name'] = str(i + 1)
     mov_data.drop(columns=['Adult'], inplace=True)
     mov_data.to_csv('movie_collection_data_1.csv', index=False)
+
 
 def sec_data():
     for i, _ in enumerate(mov_data['Collection_name']):
@@ -18,15 +18,8 @@ def sec_data():
             mov_data.at[i, 'Collection_name'] = 1
     mov_data.to_csv('movie_collection_data_1.csv', index=False)
 
-def sec_unig_data():
-    # genres = []
-    # for i, col in enumerate(mov_data.Genres):
-    #     for el in col.split(';'):
-    #         if el.strip() in genres:
-    #             continue
-    #         else:
-    #             genres.append(el.strip())
 
+def sec_unig_data():
     for i, col in enumerate(mov_data.Genres):
         temp_res = 0
         for el in col.split(';'):
@@ -229,48 +222,11 @@ def build_train_set():
 def show_coor():
     tr_df = pd.read_csv('train_data_1.csv')
     print(tr_df.corr()[['rate']])
+    cnt = 0
+    for x in tr_df.user.values:
+        if x == 90.4185:
+            cnt += 1
+    print(cnt)
+
 
 show_coor()
-
-# def multi_task(idx, x_vec):
-# 	print("Classifiing vec {} at idx {}".format(x_vec, idx))
-# 	y_pred[idx] = classify(train_set, x_vec, 10)
-# 	print("Predicted {} should be {}".format(y_pred[idx], y_target[idx]))
-
-
-# def main_task():
-# 	for idx in range(0, 231, 10):
-# 		t0 = mlpt.Process(target=multi_task, args=(idx, x_test[idx]))
-# 		t1 = mlpt.Process(target=multi_task, args=(idx + 1, x_test[idx + 1]))
-# 		t2 = mlpt.Process(target=multi_task, args=(idx + 2, x_test[idx + 2]))
-# 		t3 = mlpt.Process(target=multi_task, args=(idx + 3, x_test[idx + 3]))
-# 		t4 = mlpt.Process(target=multi_task, args=(idx + 4, x_test[idx + 4]))
-# 		t5 = mlpt.Process(target=multi_task, args=(idx + 5, x_test[idx + 5]))
-# 		t6 = mlpt.Process(target=multi_task, args=(idx + 6, x_test[idx + 6]))
-# 		t7 = mlpt.Process(target=multi_task, args=(idx + 7, x_test[idx + 7]))
-# 		t8 = mlpt.Process(target=multi_task, args=(idx + 8, x_test[idx + 8]))
-# 		t9 = mlpt.Process(target=multi_task, args=(idx + 9, x_test[idx + 9]))
-#
-# 		t0.start()
-# 		t1.start()
-# 		t2.start()
-# 		t3.start()
-# 		t4.start()
-# 		t5.start()
-# 		t6.start()
-# 		t7.start()
-# 		t8.start()
-# 		t9.start()
-#
-# 		t0.join()
-# 		t1.join()
-# 		t2.join()
-# 		t3.join()
-# 		t4.join()
-# 		t5.join()
-# 		t6.join()
-# 		t7.join()
-# 		t8.join()
-# 		t9.join()
-
-

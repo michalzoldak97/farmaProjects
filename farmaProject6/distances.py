@@ -14,16 +14,24 @@ def euc_dist(r1, r2):
     return sqrt(dist)
 
 
+def coverage_measure(y_pred, y_true):
+    label = [float(i) for i in range(6)]
+    shoots = [0 for _ in range(6)]
+    for i, pred in enumerate(y_pred):
+        diff = euc_dist([pred], [y_true[i]])
+        for res in label:
+            if diff == res:
+                shoots[int(res)] += 1
+
+    for i, val in enumerate(shoots):
+        print("{}= {}  =>  {}%".format(label[i], val, (sum(shoots[:i+1]) / len(y_pred) * 100)))
+
+
 def acc_measure(y_pred, y_true):
     all_acc = 0.0
     for i, pred in enumerate(y_pred):
         diff = euc_dist([pred], [y_true[i]])
-        if diff == 0.0:
-            all_acc += 1.0
-        elif diff == 5.0:
-            all_acc += 0.0
-        else:
-            all_acc += (5.0 - diff) / 5.0
+        all_acc += (5.0 - diff) / 5.0
     return all_acc / len(y_pred)
 
 # dataset = [[2.7810836,2.550537003,0],
@@ -41,12 +49,11 @@ def acc_measure(y_pred, y_true):
 # for i, row in enumerate(dataset):
 # 	distance = cos_dist(row0, row)
 # 	print(i, " ", distance)
-
+#
 # a = [10, 5, 15, 7, 5]
 # b = [5, 10, 17, 5, 3]
 # print(a)
 # print([a])
 # cosine = cosine_similarity([a], [b])
 # print(cosine[0][0])
-
-print(euc_dist([0], [5]))
+# coverage_measure(a, b)
