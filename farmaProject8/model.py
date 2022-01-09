@@ -1,6 +1,9 @@
 class User:
 
-    def __init__(self, movies: list):
+    def __init__(self, user_id: int, movies=None):
+        if movies is None:
+            movies = []
+        self.user_id = user_id
         self.movies = movies
 
     def has_a_movie(self, idx: int):
