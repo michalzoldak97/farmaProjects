@@ -7,9 +7,16 @@ from model import User
 def _load_train_datasets():
     df = pd.read_csv('data/train.csv', sep=';')
     df.drop(columns=['idx'], inplace=True)
-    val_df = df.sample(n=7800)
+    val_df = df.sample(n=7800, random_state=21)
     df.drop(index=val_df.index, inplace=True)
     return df.values.tolist(), val_df.values.tolist()
+
+
+def _load_task_datasets():
+    train_df = pd.read_csv('data/train.csv', sep=';')
+    train_df.drop(columns=['idx'], inplace=True)
+    test_df = pd.read_csv('data/task.csv', sep=',')
+    return train_df.values.tolist(), test_df.values.tolist()
 
 
 def _create_user_list(df_val: list):
@@ -54,3 +61,9 @@ def get_data_train():
     train_set, val_set = _load_train_datasets()
     mlpt_users = _create_users_multi(12, train_set)
     return mlpt_users, val_set
+
+
+def get_data_task():
+    train_set, test_set = _load_task_datasets()
+    mlpt_users = _create_users_multi(12, train_set)
+    return mlpt_users, test_set
