@@ -34,6 +34,9 @@ def play_ground():
 
     user_movie_mtx = np.zeros((unique_movies_num, unique_users_num))
 
+    print(unique_movies_num, unique_users_num)
+    print(user_movie_mtx)
+
     for u in range(unique_users_num):
         for m in range(unique_movies_num):
             df = sample_data[(sample_data['user'] == u) & (sample_data['movie'] == m)]
@@ -58,7 +61,7 @@ def play_ground():
                 loss_u[i] = grad_m
                 u_params[u][i] = arg + (_lr * grad_m)
 
-            grad_c = (1. / 2.) * sum(y_pred)
+            grad_c = (1. / 2.) * sum(y_diff)
             loss_u[-1] = grad_c
             u_params[u][len(vec) - 1] = u_params[u][len(vec) - 1] + (_lr * grad_c)
 
