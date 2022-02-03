@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
-import matchoperations as mat
+import mathoperations as mat
 import utils as util
 from gradientdescent import minimize
 
@@ -14,7 +14,6 @@ def plot_data_new(x, y, theta=np.array(([0], [0])), reg=0):
     plt.scatter(x, y, s=50, c='red', marker='x', linewidths=1, label='Data')
     plt.grid(True)
     plt.legend()
-    plt.show()
 
 
 def plot_data(x, y, theta=np.array(([0], [0])), reg=0):
@@ -47,13 +46,13 @@ def plot_fit(X, y, degree, num_points, reg = 0):
     x_poly = get_poly_features(X, degree)
     starting_theta = mat.ones(len(x_poly[0]))
     opt_theta = minimize(starting_theta, x_poly, y, reg=0)
+    opt_theta = [[el] for el in opt_theta]
     x_range = np.linspace(-55, 50, num_points)
     x_range_poly = [[el] for el in x_range]
     x_range_poly = get_poly_features(x_range_poly, len(starting_theta)-2)
-    print(x_range_poly)
-    sys.exit()
-    y_range = x_range_poly @ opt_theta
-    plot_data(X, y)
+    y_range = mat.matrix_multiply(x_range_poly, opt_theta)
+    print(y_range)
+    plot_data_new(X, y)
     plt.plot(x_range, y_range, "--", color = "blue", label = "Polynomial regression fit")
     plt.title('Polynomial Regression Fit: No Regularization')
     if reg != 0:
@@ -68,7 +67,7 @@ x_train, y_train = util.get_data(util.get_filepath())
 # x_train = np.c_[np.ones_like(data['X']), data['X']]
 # print(y_train)
 # mat.normalize_matrix(x_train)
-plot_fit(x_train, y_train, 4, 100, 1)
+plot_fit(x_train, y_train, 4, 100, 0)
 #
 # X = [[2, 3], [4, 5]]
 # print(X[0])

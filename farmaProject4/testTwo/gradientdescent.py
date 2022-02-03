@@ -1,4 +1,4 @@
-from matchoperations import ones
+from mathoperations import ones
 
 
 def _calc_funct_val(args, x_all):

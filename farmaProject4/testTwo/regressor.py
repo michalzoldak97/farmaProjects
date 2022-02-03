@@ -1,4 +1,4 @@
-import matchoperations as mat
+import mathoperations as mat
 import utils as util
 from gradientdescent import minimize
 

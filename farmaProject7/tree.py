@@ -1,5 +1,6 @@
 from math import log, e
 
+
 class Condition:
 
     def __init__(self, column, value):

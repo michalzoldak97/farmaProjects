@@ -55,31 +55,6 @@ class CollFilter:
         self.m_feats = [[1. for _ in range(self.n_feat)] for _ in range(self.um_n)]
         self.u_params = [[1. for _ in range(self.n_feat + 1)] for _ in range(self.uu_n)]
 
-    def _normalize_features(self):
-        min_max_m = [0, 0]
-        min_max_u = [0, 0]
-        for row in self.m_feats:
-            for val in row:
-                if val < min_max_m[0]:
-                    min_max_m[0] = val
-                    continue
-                if val > min_max_m[1]:
-                    min_max_m[1] = val
-
-        for row in self.u_params:
-            for val in row:
-                if val < min_max_u[0]:
-                    min_max_u[0] = val
-                    continue
-                if val > min_max_u[1]:
-                    min_max_u[1] = val
-
-        for i, row in enumerate(self.m_feats):
-            self.m_feats[i] = [(float(j) + 1000) / 2000 for j in row]
-
-        for i, row in enumerate(self.u_params):
-            self.u_params[i] = [(float(j) + 1000) / 2000 for j in row]
-
     def _minimize(self):
         for epoch in self.epochs:
             for u, vec in enumerate(self.u_params):

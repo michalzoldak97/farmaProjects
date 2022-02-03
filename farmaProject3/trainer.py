@@ -1,8 +1,9 @@
+import datetime
 import fileinput
 import sys
 import argparse
 import matplotlib.pyplot as plt
-import random
+start = datetime.datetime.now()
 
 
 def _get_filepaths():
@@ -35,15 +36,28 @@ def _get_iter(filepath):
 
 
 def _get_function(descr):
-    a = [0 for x in range(int(descr[0][0])+1)]
-    c = 0
-    for col in descr[1:]:
-        for i, num in enumerate(col):
-            if num != 0 and i != len(col) - 1:
-                a[int(num)] = col[-1]
-        if all(int(x) == 0 for x in col[:-1]):
-            c = col[-1]
-    return a[1:], c
+    try:
+        arr = [1.0 for nr in range(len(descr[1:]))]
+        con = 0.0
+        for colmn in descr[1:]:
+            if all(int(x) == 0 for x in colmn[:-1]):
+                con = colmn[-1]
+            else:
+                for nm in colmn:
+                    if int(nm) != 0 and nm < len(arr):
+                        arr[int(nm)] = colmn[-1]
+
+        return arr[1:], con
+    except:
+        if len(descr) - 2 > 0:
+            arr = [1.0 for x in range(len(descr) - 2)]
+        else:
+            arr = [1.0]
+        return arr, 1.0
+
+
+def _calc_val(w, b, X):
+    return sum([w[i]*x for i, x in enumerate(X)]) + b
 
 
 def _write_data_out(filepath, iter_num):
@@ -66,7 +80,7 @@ tr_set = _get_file(tr_set_path)
 lr = 0.01
 
 iter_count = 0
-loss = [[] for x in a]
+loss = [1.0 for x in a]
 
 X = []
 Y = []
@@ -74,28 +88,22 @@ Y = []
 for col in tr_set:
     X.append(col[:-1])
     Y.append(col[-1])
-
+X_pre = X
 X = list(zip(*X))
 n = float(len(a))
 
-Y_pred = [a[0]*x + c for x in X[0]]
+pre_d = 1/n
 
-plt.scatter(X[0], Y)
-plt.plot([min(X[0]), max(X[0])], [min(Y_pred), max(Y_pred)], color='green')
-plt.show()
-
-for i in range(epochs):
+for itr in range(epochs):
     for j, m in enumerate(a):
-        Y_pred = [m*x + c for x in X[j]]
-        D_m = (-2/n) * sum([x * (Y[i] - Y_pred[i]) for i, x in enumerate(X[j])])
+        Y_pred = [m*x for x in X[j]]
+        D_m = pre_d * sum([(Y_pred[i] - Y[i]) * x for i, x in enumerate(X[j])])
         a[j] = m - lr * D_m
-        loss[j].append(D_m)
-        D_c = (-2/n) * sum([y - Y_pred[i] for i, y in enumerate(Y)])
-        c = c - lr * D_c
+        loss[j] = D_m
+    D_c = pre_d * sum([_calc_val(a, c, X_pre[i]) - y for i, y in enumerate(Y)])
+    c = c - lr * D_c
     iter_count += 1
-    if lr > 0.0001:
-        lr = lr - (1 / iter_count) * 0.001
-    if iter_count > 100000 or all(0.0000000001 > l[-1] > -0.0000000001 for l in loss):
+    if iter_count > 999 or all(0.000001 > l_val > -0.000001 for l_val in loss):
         break
 
 _write_data_out(dt_out_path, iter_count)
@@ -116,6 +124,8 @@ for i, m in enumerate(a):
 for n in range(len(a)):
     sys.stdout.write("0 ")
 sys.stdout.write(str(c) + "\n")
+
+print("took: ", datetime.datetime.now() - start, "   iter: ", iter_count)
 
 Y_pred = [a[0]*x + c for x in X[0]]
 

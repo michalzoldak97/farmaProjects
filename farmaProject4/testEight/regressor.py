@@ -28,7 +28,7 @@ res_tpl = [0, 999.0, 0.0]
 
 min_degree, max_degree = 1, 12
 
-train([.0, .1, .2, .3, .4, .5])
+train([.0]) # , .1, .2, .3, .4, .5])
 
 final_poly_reg = PolyRegressor(x_train, x_test, y_train, y_train, degree=res_tpl[0], iter_=10000, reg=res_tpl[2])
 final_res = final_poly_reg.calc_result()[2]

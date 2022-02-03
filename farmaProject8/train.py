@@ -28,7 +28,7 @@ def coverage_measure(y_pred, y_true):
 
     return cov_str
 
-
+# extract current user and all who voted the same movie
 def _get_usr_and_similar(row: list):
     curr_user = None
     all_users = []
@@ -46,15 +46,21 @@ def _get_usr_and_similar(row: list):
 def _rank_users(usr: User, others: list, max_u: int):
     ranking = []
     for user in others:
+        common_movies = 0
         rank_row = [user, .0]
+        # for current user
         for movie in usr.movies:
+            # for somebody else
             for mv in user.movies:
                 if movie[0] == mv[0]:
+                    common_movies += 1
                     diff = euc_dist([movie[1]], [mv[1]])
                     if diff == 0:
                         rank_row[1] += 1.
                     else:
-                        rank_row[1] += 1. / float(diff)
+                        r = 1. / float(diff)
+                        rank_row[1] += r**2
+        rank_row[1] = rank_row[1] / common_movies
         ranking.append(rank_row)
 
     ranking.sort(key=lambda x: x[1], reverse=True)
@@ -131,7 +137,7 @@ def predict_test():
     y_pred = [int(x) for x in y_pred]
     submission_df = pd.read_csv('data/task.csv', sep=';')
     submission_df['rate'] = y_pred
-    submission_df.to_csv('data/submission_1.csv', sep=';', index=False)
+    submission_df.to_csv('data/submission_2.csv', sep=';', index=False)
 
 
 users, val_set = get_data_task()

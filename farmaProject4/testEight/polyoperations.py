@@ -1,13 +1,10 @@
 import mathoperations as mat
 from gradientdescent import minimize
 import polynomial as poly
+import sys
 
 
 class PolyRegressor():
-
-    """
-    should return: optimal_theta, inc, msq for val
-    """
 
     def __init__(self, x_train: list, x_val: list, y_train: list, y_val: list, degree=2, iter_=1000, lr_=.1, reg=.01):
         self.x_train = x_train
@@ -21,9 +18,14 @@ class PolyRegressor():
         self.min_max = mat.min_max(x_train + x_val)
 
     def _get_poly_features(self, x):
+        print("X before: {}".format(x))
         x_n = mat.normalize_all_uni(x, (-1, 1), self.min_max)
+        print("X normalized: {}".format(x_n))
         poly_feat = poly.PolynomialFeatures(self.degree)
-        return poly_feat.transform(x_n)
+        # return poly_feat.transform(x_n)
+        trsfmed = poly_feat.transform(x_n)
+        print("X transformed: {}".format(trsfmed))
+        return trsfmed
 
     def _calc_theta(self, x, y):
         x_poly = self._get_poly_features(x)
@@ -33,8 +35,10 @@ class PolyRegressor():
         return opt_theta, c
 
     def calc_result(self):
+        print("x train: {}".format(self.x_train))
         optimal_theta, inc = self._calc_theta(self.x_train, self.y_train)
         self.x_val = self._get_poly_features(self.x_val)
+        sys.exit()
         y_res = mat.matrix_multiply(self.x_val, optimal_theta)
         y_res = [el[0] + inc for el in y_res]
         return optimal_theta, inc, y_res

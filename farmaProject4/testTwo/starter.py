@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from scipy.optimize import minimize
 import gradientdescent as grad
+import mathoperations as mat
 from sklearn.preprocessing import PolynomialFeatures
 import fileinput
 import sys
@@ -65,11 +66,7 @@ def cost(theta, X, y, reg=0):
 
 
 def optimal_theta(theta, X, y, reg=0):
-    # Nelder-Mead yields best fit
-    res = minimize(fun=cost, x0=theta, args=(X, y, reg), method='Nelder-Mead', jac=True)
-    res_desc = grad.minimize(theta, X, y)
-    print(res.x)
-    print(res_desc)
+    res_desc = grad.minimize(theta, X, y, reg)
     return res_desc # res.x
 
 
@@ -91,8 +88,10 @@ def plot_fit(X, y, degree, num_points, reg = 0):
     X_poly = poly_features(X, degree)[1]
     starting_theta = np.ones((X_poly.shape[1], 1))
     opt_theta = optimal_theta(starting_theta, X_poly, y, reg)
-    # sys.exit()
-    x_range = np.linspace(-55, 50, num_points)
+    # x_range = np.linspace(-45, 40, num_points)
+    x_range = np.array([-48.058829452570066, -44.38375985168692, -34.70626581132249, -29.152979217238133,
+                        -15.93675813378541, -8.941457938049755, 1.3891543686358903, 7.013502082404112,
+                        15.307792889226079, 22.762748919711303, 36.18954862666253, 37.49218733199513])
     x_range_poly = np.ones((num_points, 1))
     x_range_poly = np.insert(x_range_poly, x_range_poly.shape[1], x_range.T, axis = 1)
     x_range_poly = poly_features(x_range_poly, len(starting_theta)-2)[0]
@@ -104,9 +103,27 @@ def plot_fit(X, y, degree, num_points, reg = 0):
         plt.title('Polynomial Regression Fit: Lambda = {0}'.format(reg))
     plt.legend()
     plt.show()
+    return y_range
 
-# x_train, y_train = get_data(get_filepath())
-data = loadmat('ex5data1.mat')
-y_train = data['y']
-x_train = np.c_[np.ones_like(data['X']), data['X']]
-plot_fit(x_train, y_train, 6, 1000, 0)
+
+x_train, y_train = get_data(get_filepath())
+y_train_p = y_train
+x_train_p = x_train
+x_train = np.c_[np.ones_like(x_train), x_train]
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+# data = loadmat('ex5data1.mat')
+# y_train = data['y']
+# x_train = np.c_[np.ones_like(data['X']), data['X']]
+y_pred = plot_fit(x_train, y_train, 8, 12, 0)
+
+##///##\\\
+
+x_train_p = [x[0] for x in x_train_p]
+y_pred = [x[0] for x in y_pred]
+plt.scatter(x_train_p, y_train_p, s=50, c='red', marker='x', linewidths=1, label='Data')
+plt.plot(x_train_p, y_pred, "--", color="blue", label="Polynomial regression fit")
+plt.show()
+# print(y_train_p)
+# print(y_pred)
+print(mat.calc_mean_error(y_train_p, y_pred))

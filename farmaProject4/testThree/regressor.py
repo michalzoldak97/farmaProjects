@@ -31,7 +31,7 @@ def _calc_theta(x, y, degree, reg):
 
 
 x_train, y_train = util.get_data(util.get_filepath())
-opt = _calc_theta(x_train, y_train, 24, 0.25)
+opt = _calc_theta(x_train, y_train, len(x_train[0])*6, 0.01)
 sys_x = util.read_sys_file()
 x_res = _get_poly_features(sys_x, len(opt) - 2)
 y_res = mat.matrix_multiply(x_res, opt)
@@ -42,9 +42,9 @@ test_file = open("res_1d", "r")
 y_test = [[float(el) for el in col.split()]for col in test_file]
 y_test = [x[0] for x in y_test]
 test_file.close()
-_plot_result(sys_x, y_test)
-plt.plot(sys_x, y_res, "--", color="blue", label="Polynomial regression fit")
-plt.show()
+# _plot_result(sys_x, y_test)
+# plt.plot(sys_x, y_res, "--", color="blue", label="Polynomial regression fit")
+# plt.show()
 print(mat.calc_mean_error(y_test, y_res))
 for el in y_res:
     print(el)

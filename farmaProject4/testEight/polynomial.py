@@ -67,13 +67,14 @@ class PolynomialFeatures:
         
     def fit(self):
         for i in range(1, self.deg + 1):
-            self.trnsf.append(PolynomialFeaturesForDegree(i))
+            self.trnsf.append(PolynomialFeaturesForDegree(2)) # chnged to 2
         
     def transform(self, dataset):
         self.fit()
         temp = [[1.0] for _ in enumerate(dataset)]
         for t in self.trnsf:
             features_for_deg = t.get_polynomial_features(dataset)
+            print("Features for deg: {}".format(features_for_deg))
             for i, _ in enumerate(temp):
                 for el in features_for_deg[i]:
                     temp[i].append(el)
