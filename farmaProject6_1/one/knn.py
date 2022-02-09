@@ -44,6 +44,6 @@ def classify_task(k: int):
     sub.to_csv('../submissions/submission_1.csv', index=False, sep=';')
 
 
-k_ = 5
+k_ = 30
 # classify_val(k_)
 classify_task(k_)
