@@ -52,6 +52,9 @@ class Condition:
         self.col_idx = col_idx
         self.val = val
 
+    def __repr__(self):
+        return "Is {} < {}".format(self.col_idx, self.val)
+
     def is_con(self, row: list):
         return row[self.col_idx] < self.val
 
@@ -131,7 +134,7 @@ def print_tree(node, spacing=""):
     print(spacing + str(node.condition))
 
     print(spacing + '--> True:')
-    print_tree(node.true_group, spacing + "  ")
+    print_tree(node.l_branch, spacing + "  ")
 
     print(spacing + '--> False:')
-    print_tree(node.false_group, spacing + "  ")
+    print_tree(node.r_branch, spacing + "  ")

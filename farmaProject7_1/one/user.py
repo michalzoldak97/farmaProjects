@@ -1,4 +1,4 @@
-from tree import build_tree, Leaf, Node, Condition
+from tree import build_tree, Leaf, print_tree
 
 
 class User:
@@ -31,3 +31,6 @@ class User:
 
     def get_rate_for_new_movie(self, mov_feats: list):
         return self._classify_with_tree(mov_feats, self.user_tree)
+
+    def print_tree(self):
+        print_tree(self.user_tree)
