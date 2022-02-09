@@ -1,6 +1,7 @@
 from userModel import User
-from dataextractor import get_train_val_data
+from dataextractor import get_train_val_data, get_train_task_data
 from distances import coverage_measure
+import pandas as pd
 
 
 def _build_user_list(train_set: list):
@@ -32,9 +33,17 @@ def classify_val(k: int):
     y_res, y_true = _build_results_list(val_set, all_users, k)
     print(coverage_measure(y_res, y_true))
 
+
 def classify_task(k: int):
-    pass
+    train_set, task_set = get_train_task_data()
+    all_users = _build_user_list(train_set)
+    y_res, _ = _build_results_list(task_set, all_users, k)
+    sub = pd.read_csv('../data/task.csv', sep=';')
+    sub.drop(columns=['rate'], inplace=True)
+    sub['rate'] = y_res
+    sub.to_csv('../submissions/submission_1.csv', index=False, sep=';')
 
 
 k_ = 5
-classify(k_)
+# classify_val(k_)
+classify_task(k_)

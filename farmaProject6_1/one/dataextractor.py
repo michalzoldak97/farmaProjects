@@ -3,7 +3,7 @@ import pandas as pd
 
 def _load_raw_csv():
     train_df = pd.read_csv('../data/train.csv', sep=';')
-    task_df = pd.read_csv('../data/task.csv', sep=',')
+    task_df = pd.read_csv('../data/task.csv', sep=';')
     return train_df, task_df
 
 
@@ -33,12 +33,11 @@ def _replace_m_id_with_feats(df_to_modify: pd.DataFrame, m_feats: list):
             if set_row[1] == mov[0]:
                 set_row[1] = mov[1:]
 
-    print(to_modify)
-
     return to_modify
 
 # movie_feats_df.drop(columns=['has_collection', 'popularity', 'budget', 'language', 'runtime', 'revenue',
 #                         'vote_avg', 'vote_count', 'gen_one', 'gen_two', 'gen_three', 'gen_four'], inplace=True)
+
 
 def get_train_val_data():
     train_df, val_df = _load_train_val_data()
@@ -49,3 +48,16 @@ def get_train_val_data():
     train_set = _replace_m_id_with_feats(train_df, movie_feats_df)
     val_set = _replace_m_id_with_feats(val_df, movie_feats_df)
     return train_set, val_set
+
+
+def get_train_task_data():
+    train_df, task_df = _load_raw_csv()
+    movie_feats_df = pd.read_csv('../data/movie_collection_data_4.csv')
+    train_df.drop(columns=['idx'], inplace=True)
+    task_df.drop(columns=['idx'], inplace=True)
+    movie_feats_df.drop(columns=['has_collection', 'language', 'runtime', 'vote_avg', 'gen_one', 'gen_two', 'gen_three',
+                                 'gen_four'], inplace=True)
+    movie_feats_df = _normalize_m_feats(movie_feats_df)
+    train_set = _replace_m_id_with_feats(train_df, movie_feats_df)
+    task_set = _replace_m_id_with_feats(task_df, movie_feats_df)
+    return train_set, task_set
