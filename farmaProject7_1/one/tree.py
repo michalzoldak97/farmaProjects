@@ -135,4 +135,3 @@ def print_tree(node, spacing=""):
 
     print(spacing + '--> False:')
     print_tree(node.false_group, spacing + "  ")
-
