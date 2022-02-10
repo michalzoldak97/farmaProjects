@@ -1,7 +1,9 @@
 import pandas as pd
+import copy
 
 movie_feat_cols = ['has_collection', 'popularity', 'budget', 'language', 'runtime', 'revenue', 'vote_avg', 'vote_count',
                    'gen_one', 'gen_two', 'gen_three', 'gen_four']
+
 
 def _load_raw_csv():
     train_df = pd.read_csv('../data/train.csv', sep=';')
@@ -19,8 +21,8 @@ def _load_train_val_data(val_n=7800):
 
 
 def _normalize_m_feats(m_feats: pd.DataFrame):
-    for col in m_feats.columns[1:]:
-        m_feats[col] = m_feats[col] / m_feats[col].abs().max()
+    # for col in m_feats.columns[1:]:
+    #     m_feats[col] = m_feats[col] / m_feats[col].abs().max()
     m_feats = m_feats.values.tolist()
     for i, row in enumerate(m_feats):
         m_feats[i][0] = int(row[0])
@@ -42,7 +44,7 @@ def _replace_m_id_with_feats(df_to_modify: pd.DataFrame, m_feats: list):
 
 
 def _get_feats_to_drop(feats_to_use: list):
-    all_feats = movie_feat_cols
+    all_feats = copy.deepcopy(movie_feat_cols)
     for feat in feats_to_use:
         all_feats.remove(feat)
     return all_feats

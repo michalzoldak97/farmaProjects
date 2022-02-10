@@ -133,8 +133,8 @@ def print_tree(node, spacing=""):
 
     print(spacing + str(node.condition))
 
-    print(spacing + '--> True:')
-    print_tree(node.l_branch, spacing + "  ")
+    print(spacing + 'IF True:')
+    print_tree(node.l_branch, spacing + "*------*")
 
-    print(spacing + '--> False:')
-    print_tree(node.r_branch, spacing + "  ")
+    print(spacing + 'IF False:')
+    print_tree(node.r_branch, spacing + "*------*")

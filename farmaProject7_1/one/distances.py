@@ -21,4 +21,7 @@ def coverage_measure(y_pred, y_true):
     for i, val in enumerate(shoots):
         cov_str += "{}= {}  =>  {}%\n".format(label[i], val, (sum(shoots[:i+1]) / len(y_pred) * 100))
 
-    return cov_str
+    first = (sum(shoots[:1]) / len(y_pred) * 100)
+    second = (sum(shoots[:2]) / len(y_pred) * 100)
+
+    return cov_str, first, second
